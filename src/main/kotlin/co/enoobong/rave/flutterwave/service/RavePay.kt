@@ -1,8 +1,10 @@
 package co.enoobong.rave.flutterwave.service
 
+import co.enoobong.rave.flutterwave.data.AccountPayload
 import co.enoobong.rave.flutterwave.data.ApiResponse
 import co.enoobong.rave.flutterwave.data.Bank
 import co.enoobong.rave.flutterwave.data.Callbacks
+import co.enoobong.rave.flutterwave.data.CardPayload
 import co.enoobong.rave.flutterwave.data.ChargeRequest
 import co.enoobong.rave.flutterwave.data.ChargeResponseData
 import co.enoobong.rave.flutterwave.data.Payload
@@ -35,6 +37,20 @@ class RavePay private constructor(private val secretKey: String) {
      * @param payload Payload object
      */
     fun chargeCard(
+        payload: CardPayload,
+        callback: Callbacks.OnChargeRequestComplete
+    ) {
+        makeCharge(payload, callback)
+    }
+
+    fun chargeAccount(
+        payload: AccountPayload,
+        callback: Callbacks.OnChargeRequestComplete
+    ) {
+        makeCharge(payload, callback)
+    }
+
+    private fun makeCharge(
         payload: Payload,
         callback: Callbacks.OnChargeRequestComplete
     ) {
