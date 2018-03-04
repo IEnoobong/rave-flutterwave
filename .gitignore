@@ -24,8 +24,6 @@ $RECYCLE.BIN/
 *.lnk
 ### Java template
 # Compiled class file
-*.class
-
 # Log file
 *.log
 
@@ -77,8 +75,6 @@ hs_err_pid*
 
 # Gradle:
 .idea/**/gradle.xml
-.idea/**/libraries
-
 # CMake
 cmake-build-debug/
 cmake-build-release/
@@ -157,3 +153,4 @@ nbdist/
 .nb-gradle/
 /.idea/
 /Rave-Flutterwave.iml
+/config.properties
