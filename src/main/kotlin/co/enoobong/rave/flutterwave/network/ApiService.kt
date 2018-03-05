@@ -13,7 +13,7 @@ import retrofit2.http.POST
  * @author Ibanga Enoobong I
  * @since 2/27/18.
  */
-interface ApiService {
+internal interface ApiService {
 
     @POST(ApiEndpoints.DIRECT_CHARGE)
     fun directCharge(@Body chargeRequest: ChargeRequest): Call<String>

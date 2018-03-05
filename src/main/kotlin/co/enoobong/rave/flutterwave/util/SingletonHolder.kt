@@ -4,7 +4,7 @@ package co.enoobong.rave.flutterwave.util
  * @author Ibanga Enoobong I
  * @since 2/28/18.
  */
-open class SingletonHolder<out T, in A>(creator: (A) -> T) {
+internal open class SingletonHolder<out T, in A>(creator: (A) -> T) {
     private var creator: ((A) -> T)? = creator
     @Volatile
     private var instance: T? = null

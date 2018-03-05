@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit
  * @author Ibanga Enoobong I
  * @since 2/27/18.
  */
-object ApiClient {
+internal object ApiClient {
     private var uniqueService: ApiService? = null
 
     val apiService: ApiService

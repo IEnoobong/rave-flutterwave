@@ -68,18 +68,6 @@
         </dependency>
     </dependencies>
 
-
-    <repositories>
-        <repository>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <id>bintray-markusamshove-maven</id>
-            <name>bintray</name>
-            <url>http://dl.bintray.com/markusamshove/maven</url>
-        </repository>
-    </repositories>
-
     <build>
         <sourceDirectory>src/main/kotlin</sourceDirectory>
         <testSourceDirectory>src/test/kotlin</testSourceDirectory>

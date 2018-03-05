@@ -6,6 +6,6 @@ import com.google.gson.Gson
  * @author Ibanga Enoobong I
  * @since 3/3/18.
  */
-object GsonInstance {
+internal object GsonInstance {
     val GSON = Gson()
 }

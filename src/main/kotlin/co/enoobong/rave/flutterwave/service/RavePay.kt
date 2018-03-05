@@ -27,7 +27,7 @@ import java.util.logging.Logger
  * @since 3/2/18.
  */
 class RavePay private constructor(private val secretKey: String) {
-    companion object : SingletonHolder<RavePay, String>(::RavePay) {
+    internal companion object : SingletonHolder<RavePay, String>(::RavePay) {
         private val L = Logger.getLogger(RavePay::class.java.name)
     }
 

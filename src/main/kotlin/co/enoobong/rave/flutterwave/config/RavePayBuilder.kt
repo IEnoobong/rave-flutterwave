@@ -12,12 +12,12 @@ import java.util.logging.Logger
  * @since 2/27/18.
  */
 
-internal object RavePayBuilder {
+object RavePayBuilder {
 
     private val L = Logger.getLogger(RavePayBuilder::class.java.simpleName)
     private const val TARGET = "FLWSECK-"
 
-    var whichEnvironment = Environment.STAGING
+    internal var whichEnvironment = Environment.STAGING
     private var userSecretKey = ""
 
 
@@ -34,11 +34,11 @@ internal object RavePayBuilder {
     }
 
     @TestOnly
-    fun getSecurityKey(): String {
+    internal fun getSecurityKey(): String {
         return userSecretKey
     }
 
-    fun encryptSecretKey(secretKey: String): String {
+    internal fun encryptSecretKey(secretKey: String): String {
         val md5Hash = secretKey.toMd5()
         val cleanSecret = secretKey.replace(TARGET, "")
         val hashLength = md5Hash.length
@@ -54,7 +54,7 @@ internal object RavePayBuilder {
         return RavePay.getInstance(userSecretKey)
     }
 
-    fun getBaseUrl(): String {
+    internal fun getBaseUrl(): String {
         return if (whichEnvironment == Environment.STAGING) {
             RaveConstants.STAGING_URL
         } else {
