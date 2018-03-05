@@ -43,10 +43,6 @@ fun <T> T.toJsonString(): String {
     return GsonInstance.GSON.toJson(this, toType<T>())
 }
 
-//fun <T> String.toDataClass(): T {
-//    return GsonInstance.GSON.fromJson(this, toType<T>())
-//}
-
 const val errorParsingError = "An error occurred parsing the error response"
 
 fun ResponseBody?.toErrorDataResponse(): ApiResponse<ErrorResponseData> {

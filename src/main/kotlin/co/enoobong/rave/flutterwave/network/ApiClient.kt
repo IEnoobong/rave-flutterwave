@@ -1,6 +1,7 @@
 package co.enoobong.rave.flutterwave.network
 
 import co.enoobong.rave.flutterwave.config.RavePayBuilder
+import co.enoobong.rave.flutterwave.data.Environment
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -34,8 +35,9 @@ object ApiClient {
         @Synchronized get() {
             if (uniqueClient == null) {
                 val logging = HttpLoggingInterceptor()
-                logging.level = if (RavePayBuilder.isTest) HttpLoggingInterceptor.Level.BODY
-                else HttpLoggingInterceptor.Level.NONE
+                logging.level =
+                        if (RavePayBuilder.whichEnvironment == Environment.STAGING) HttpLoggingInterceptor.Level.BODY
+                        else HttpLoggingInterceptor.Level.NONE
 
 
                 val httpClient = OkHttpClient.Builder()

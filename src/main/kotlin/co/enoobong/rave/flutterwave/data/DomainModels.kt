@@ -158,6 +158,11 @@ enum class Country {
     ZA
 }
 
+enum class Environment {
+    STAGING,
+    LIVE
+}
+
 data class ChargeRequest(
     val PBFPubKey: String,
     val client: String,
