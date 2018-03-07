@@ -7,34 +7,36 @@ import java.math.BigDecimal
  * @author Ibanga Enoobong I
  * @since 2/27/18.
  */
-open class Payload(
-    val PBFPubKey: String,
-    val amount: BigDecimal,
-    val country: Country,
-    val currency: Currency,
-    val email: String,
-    val IP: String,
-    @SerializedName("firstName") val firstName: String,
-    @SerializedName("lastname") val lastName: String,
-    @SerializedName("txRef") val transactionRef: String
-)
+sealed class Payload {
+    abstract val PBFPubKey: String
+    abstract val amount: BigDecimal
+    abstract val country: String
+    abstract val currency: String
+    abstract val email: String
+    abstract val phoneNumber: String
+    abstract val IP: String
+    abstract val firstName: String
+    abstract val lastName: String
+    abstract val transactionRef: String
+}
 
-class CardPayload(
-    PBFPubKey: String,
+data class CardPayload(
+    override val PBFPubKey: String,
     @SerializedName("cardno") val cardNumber: String,
     val cvv: String,
     @SerializedName("expirymonth") val expiryMonth: String,
     @SerializedName("expiryyear") val expiryYear: String,
-    currency: Currency, country: Country,
-    amount: BigDecimal,
-    email: String,
-    @SerializedName("phonenumber") val phoneNumber: String,
-    firstName: String,
-    lastName: String,
-    IP: String,
-    transactionRef: String,
+    override val currency: String,
+    override val country: String,
+    override val amount: BigDecimal,
+    override val email: String,
+    @SerializedName("phonenumber") override val phoneNumber: String,
+    @SerializedName("firstName") override val firstName: String,
+    @SerializedName("lastname") override val lastName: String,
+    override val IP: String,
+    @SerializedName("txRef") override val transactionRef: String,
     @SerializedName("redirect_url") val redirectUrl: String
-) : Payload(PBFPubKey, amount, country, currency, email, IP, firstName, lastName, transactionRef) {
+) : Payload() {
 
     var pin: String? = null
     @SerializedName("suggested_auth")
@@ -43,98 +45,30 @@ class CardPayload(
     var deviceFingerprint: String? = null
     @SerializedName("charge_type")
     var chargeType: String? = null
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is CardPayload) return false
-
-        if (cardNumber != other.cardNumber) return false
-        if (cvv != other.cvv) return false
-        if (expiryMonth != other.expiryMonth) return false
-        if (expiryYear != other.expiryYear) return false
-        if (phoneNumber != other.phoneNumber) return false
-        if (redirectUrl != other.redirectUrl) return false
-        if (pin != other.pin) return false
-        if (suggestedAuth != other.suggestedAuth) return false
-        if (deviceFingerprint != other.deviceFingerprint) return false
-        if (chargeType != other.chargeType) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = cardNumber.hashCode()
-        result = 31 * result + cvv.hashCode()
-        result = 31 * result + expiryMonth.hashCode()
-        result = 31 * result + expiryYear.hashCode()
-        result = 31 * result + phoneNumber.hashCode()
-        result = 31 * result + redirectUrl.hashCode()
-        result = 31 * result + (pin?.hashCode() ?: 0)
-        result = 31 * result + (suggestedAuth?.hashCode() ?: 0)
-        result = 31 * result + (deviceFingerprint?.hashCode() ?: 0)
-        result = 31 * result + (chargeType?.hashCode() ?: 0)
-        return result
-    }
-
-    override fun toString(): String {
-        return "CardPayload(cardNumber='$cardNumber', cvv='$cvv', expiryMonth='$expiryMonth', expiryYear='$expiryYear', phoneNumber='$phoneNumber', redirectUrl='$redirectUrl', pin=$pin, suggestedAuth=$suggestedAuth, deviceFingerprint=$deviceFingerprint, chargeType=$chargeType)"
-    }
-
 }
 
-class AccountPayload(
-    PBFPubKey: String,
+data class AccountPayload(
+    override val PBFPubKey: String,
     @SerializedName("accountnumber") val accountNumber: String,
     @SerializedName("accountbank") val accountBank: String,
-    currency: Currency,
-    country: Country,
-    amount: BigDecimal,
-    email: String,
-    @SerializedName("phonenumber") val phoneNumber: String,
-    firstName: String,
-    lastName: String,
-    IP: String,
-    transactionRef: String,
+    override val currency: String,
+    override val country: String,
+    override val amount: BigDecimal,
+    override val email: String,
+    @SerializedName("phonenumber") override val phoneNumber: String,
+    @SerializedName("lastname") override val firstName: String,
+    @SerializedName("lastname") override val lastName: String,
+    override val IP: String,
+    @SerializedName("txRef") override val transactionRef: String,
     @SerializedName("payment_type") val paymentType: String
-) : Payload(PBFPubKey, amount, country, currency, email, IP, firstName, lastName, transactionRef) {
+) : Payload() {
     //Only used for Zenith bank account payment) (Format: DDMMYYYY e.g. 21051990)
     @SerializedName("passcode")
     val passCode: String? = null
 
     @SerializedName("device_fingerprint")
     var deviceFingerprint: String? = null
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is AccountPayload) return false
-
-        if (accountNumber != other.accountNumber) return false
-        if (accountBank != other.accountBank) return false
-        if (phoneNumber != other.phoneNumber) return false
-        if (paymentType != other.paymentType) return false
-        if (passCode != other.passCode) return false
-        if (deviceFingerprint != other.deviceFingerprint) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = accountNumber.hashCode()
-        result = 31 * result + accountBank.hashCode()
-        result = 31 * result + phoneNumber.hashCode()
-        result = 31 * result + paymentType.hashCode()
-        result = 31 * result + (passCode?.hashCode() ?: 0)
-        result = 31 * result + (deviceFingerprint?.hashCode() ?: 0)
-        return result
-    }
-
-    override fun toString(): String {
-        return "AccountPayload(accountNumber='$accountNumber', accountBank='$accountBank', phoneNumber='$phoneNumber', paymentType='$paymentType', passCode=$passCode, deviceFingerprint=$deviceFingerprint)"
-    }
-
-
 }
-
 
 class Meta(
     @SerializedName("metaname") val metaName: String, @SerializedName("metavalue") val
@@ -143,27 +77,12 @@ class Meta(
 
 data class RavePayload(val hash: String, val dynamicValue: String)
 
-enum class Currency {
-    NGN,
-    USD,
-    KES,
-    EUR,
-    GBP
-}
-
-enum class Country {
-    NG,
-    KE,
-    GH,
-    ZA
-}
-
 enum class Environment {
     STAGING,
     LIVE
 }
 
-data class ChargeRequest(
+internal data class ChargeRequest(
     val PBFPubKey: String,
     val client: String,
     val alg: String = "3DES-24"
@@ -178,17 +97,210 @@ data class Bank(
     val isInternetBanking: Boolean = false
 )
 
-data class SavedCard(
-    val token: String, val first6: String, val last4: String, val cardType:
-    String, val flwRef: String
-)
-
 data class ApiResponse<out T>(val status: String, val message: String, val data: T?)
 
-class ChargeResponseData(
+data class ChargeResponseData(
     @SerializedName("suggested_auth") val suggestedAuth: String, val
     chargeResponseCode: String, val authModelUsed: String, val flwRef: String, val
     chargeResponseMessage: String, @SerializedName("authurl") val authUrl: String
 )
 
-data class ErrorResponseData(@SerializedName("is_error") val isError: Boolean, val code: String)
+data class ErrorResponseData(
+    @SerializedName("is_error") val isError: Boolean, val code: String,
+    val message: String
+)
+
+data class ValidateChargePayload(
+    val PBFPubKey: String, @SerializedName("transaction_reference")
+    val transactionRef: String, val otp: String
+)
+
+data class RequeryRequestPayload @JvmOverloads constructor(
+    @SerializedName("flw_ref") val flwRef: String, val normalize: String = "1"
+) {
+    var SECKEY: String = ""
+}
+
+data class XRequeryRequestPayload @JvmOverloads constructor(
+    @SerializedName("txref") var transactionRef: String = "",
+    var flwRef: String = "",
+    @SerializedName("last_attempt") var lastAttempt: String = "",
+    @SerializedName("only_successful") var onlySuccessful: String = ""
+) {
+    var SECKEY: String = ""
+}
+
+data class RequeryResponseData(
+    @SerializedName("tx_ref") val transactionRef: String,
+    @SerializedName("flw_ref") val flwRef: String,
+    @SerializedName("transaction_currency") val currency: String,
+    val amount: BigDecimal,
+    @SerializedName("charged_amount")
+    val chargedAmount: BigDecimal,
+    val card: CardDetails,
+    val flwMeta: FlutterWaveMeta
+)
+
+data class FlutterWaveMeta(val chargeResponse: String, val chargeResponseMessage: String)
+
+data class CardDetails(
+    val cardBIN: String, @SerializedName("card_tokens") val cardTokens:
+    List<CardToken>, val brand: String, @SerializedName("expirymonth") val expiryMonth: String,
+    @SerializedName("expiryyear") val expiryYear: String, val last4digits: String
+)
+
+data class CardToken(
+    @SerializedName("shortcode") val shortCode: String, @SerializedName
+        ("embedtoken") val embedToken: String
+)
+
+data class XRequeryResponseData(
+    @SerializedName("txid") val txId: Int,
+    @SerializedName("txref") val transactionRef: String,
+    @SerializedName("flwref") val flwRef: String,
+    @SerializedName("devicefingerprint") val deviceFingerprint: String,
+    @SerializedName("cycle") val cycle: String,
+    @SerializedName("amount") val amount: Int,
+    @SerializedName("currency") val currency: String,
+    @SerializedName("chargedamount") val chargedAmount: Double,
+    @SerializedName("appfee") val appFee: Double,
+    @SerializedName("merchantfee") val merchantFee: Int,
+    @SerializedName("merchantbearsfee") val merchantBearsFee: Int,
+    @SerializedName("chargecode") val chargeCode: String,
+    @SerializedName("chargemessage") val chargeMessage: String,
+    @SerializedName("authmodel") val authModel: String,
+    @SerializedName("ip") val IP: String,
+    val narration: String,
+    val status: String,
+    @SerializedName("vbvcode") val vbvCode: String,
+    @SerializedName("vbvmessage") val vbvMessage: String,
+    @SerializedName("authurl") val authUrl: String,
+    @SerializedName("paymenttype") val paymentType: String,
+    @SerializedName("paymentid") val paymentId: String,
+    @SerializedName("fraudstatus") val fraudStatus: String,
+    @SerializedName("chargetype") val chargeType: String,
+    @SerializedName("createdday") val createdDay: Int,
+    @SerializedName("createddayname") val createdDayName: String,
+    @SerializedName("createdweek") val createdWeek: Int,
+    @SerializedName("createdmonth") val createdMonth: Int,
+    @SerializedName("createdmonthname") val createdMonthName: String,
+    @SerializedName("createdquarter") val createdQuarter: Int,
+    @SerializedName("createdyear") val createdYear: Int,
+    @SerializedName("createdyearisleap") val createdYearIsLeap: Boolean,
+    @SerializedName("createddayispublicholiday") val createdDayIsPublicHoliday: Int,
+    @SerializedName("createdhour") val createdHour: Int,
+    @SerializedName("createdminute") val createdMinute: Int,
+    @SerializedName("createdpmam") val createdPmam: String,
+    @SerializedName("created") val created: String,
+    @SerializedName("customerid") val customerId: Int,
+    @SerializedName("custphone") val customerPhone: String,
+    @SerializedName("custnetworkprovider") val customerNetworkProvider: String,
+    @SerializedName("custname") val customerName: String,
+    @SerializedName("custemail") val customerEmail: String,
+    @SerializedName("custemailprovider") val customerEmailProvider: String,
+    @SerializedName("custcreated") val customerCreateDate: String,
+    @SerializedName("accountid") val accountId: Int
+)
+
+data class PreauthorizeCardData(
+    @SerializedName("id") val id: Int,
+    @SerializedName("txRef") val transactionRef: String,
+    @SerializedName("flwRef") val flwRef: String,
+    @SerializedName("redirectUrl") val redirectUrl: String,
+    @SerializedName("device_fingerprint") val deviceFingerprint: String,
+    @SerializedName("cycle") val cycle: String,
+    @SerializedName("amount") val amount: Int,
+    @SerializedName("charged_amount") val chargedAmount: Double,
+    @SerializedName("appfee") val appFee: Double,
+    @SerializedName("merchantfee") val merchantFee: Int,
+    @SerializedName("merchantbearsfee") val merchantBearsFee: Int,
+    @SerializedName("chargeResponseCode") val chargeResponseCode: String,
+    @SerializedName("chargeResponseMessage") val chargeResponseMessage: String,
+    @SerializedName("authModelUsed") val authModelUsed: String,
+    @SerializedName("currency") val currency: String,
+    @SerializedName("IP") val IP: String,
+    @SerializedName("narration") val narration: String,
+    @SerializedName("status") val status: String,
+    @SerializedName("vbvrespmessage") val VBVRespMessage: String,
+    @SerializedName("authurl") val authUrl: String,
+    @SerializedName("vbvrespcode") val VBVRespCode: String,
+    @SerializedName("paymentType") val paymentType: String,
+    @SerializedName("paymentId") val paymentId: String,
+    @SerializedName("fraud_status") val fraudStatus: String,
+    @SerializedName("charge_type") val chargeType: String,
+    @SerializedName("is_live") val isLive: Int,
+    @SerializedName("createdAt") val createdAt: String,
+    @SerializedName("updatedAt") val updatedAt: String,
+    @SerializedName("customerId") val customerId: Int,
+    @SerializedName("AccountId") val accountId: Int,
+    @SerializedName("customer") val customer: Customer
+)
+
+data class Customer(
+    @SerializedName("id") val id: Int,
+    @SerializedName("phone") val phone: String,
+    @SerializedName("fullName") val fullName: String,
+    @SerializedName("email") val email: String,
+    @SerializedName("createdAt") val createdAt: String,
+    @SerializedName("updatedAt") val updatedAt: String,
+    @SerializedName("AccountId") val accountId: Int
+)
+
+data class RefundVoidResponseData(
+    @SerializedName("data") val data: RefundVoidResponseExtraData,
+    @SerializedName("status") val status: String
+)
+
+data class RefundVoidResponseExtraData(
+    @SerializedName("responsecode") val responseCode: String,
+    @SerializedName("authorizeId") val authorizeId: String,
+    @SerializedName("responsemessage") val responseMessage: String,
+    @SerializedName("transactionreference") val transactionReference: String
+)
+
+/**
+ *
+ * @property paymentType This is an optional parameter to be used when the payment type is account payment.
+ * A value of 2 is to be passed
+ *
+ * @property card6 This can be used only when the user has entered first 6digits of their card number,
+ * it also helps determine international fees on the transaction if the card being used is
+ * an international card
+ */
+data class GetFeesPayload(val amount: BigDecimal, val PBFPubKey: String, val currency: String) {
+
+    @SerializedName("ptype")
+    var paymentType: String? = null
+
+    var card6: String? = null
+}
+
+
+data class GetFeeResponseData(
+    @SerializedName("charge_amount") val chargeAmount: Double,
+    val fee: Double, @SerializedName("merchantfee") val merchantFee: Double,
+    @SerializedName("ravefee") val raveFee: Double
+)
+
+
+data class RefundResponseData(
+    @SerializedName("AmountRefunded") val amountRefunded: Double,
+    val walletId: Int,
+    val createdAt: String, @SerializedName("AccountId") val accountId: Int,
+    val id: Int,
+    @SerializedName("FlwRef") val flwRef: String,
+    @SerializedName("TransactionId") val transactionId: Int,
+    val status: String,
+    val updatedAt: String
+)
+
+
+data class ExchangeRateData(
+    @SerializedName("responsecode") val responseCode: String?,
+    @SerializedName("responsemessage") val responseMessage: String?,
+    val rate: Int?, @SerializedName("origincurrency") val originCurrency: String?,
+    @SerializedName("destinationcurrency") val destinationCurrency: String?,
+    @SerializedName("lastupdated") val lastUpdated: String?,
+    @SerializedName("converted_amount") val convertedAmount: Long?,
+    @SerializedName("original_amount") val originalAmount: Long?
+)

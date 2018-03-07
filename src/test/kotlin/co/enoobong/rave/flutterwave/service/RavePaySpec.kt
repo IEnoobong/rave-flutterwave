@@ -1,8 +1,10 @@
 package co.enoobong.rave.flutterwave.service
 
 import co.enoobong.rave.flutterwave.data.AccountPayload
-import co.enoobong.rave.flutterwave.data.Callbacks
+import co.enoobong.rave.flutterwave.data.ApiResponse
+import co.enoobong.rave.flutterwave.data.Bank
 import co.enoobong.rave.flutterwave.data.CardPayload
+import co.enoobong.rave.flutterwave.data.ChargeResponseData
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.verify
 import org.jetbrains.spek.api.Spek
@@ -20,7 +22,7 @@ class RavePaySpec : Spek({
 
         on("charge charge card called") {
             val cardPayload = mock<CardPayload>()
-            val callback = mock<Callbacks.OnChargeRequestComplete>()
+            val callback = mock<RaveCallback<ApiResponse<ChargeResponseData>>>()
             ravePayMock.chargeCard(cardPayload, callback)
 
             it("charge card method should be called") {
@@ -30,7 +32,7 @@ class RavePaySpec : Spek({
 
         on("charge account called") {
             val cardPayload = mock<AccountPayload>()
-            val callback = mock<Callbacks.OnChargeRequestComplete>()
+            val callback = mock<RaveCallback<ApiResponse<ChargeResponseData>>>()
             ravePayMock.chargeAccount(cardPayload, callback)
 
             it("charge method method should be called") {
@@ -39,7 +41,7 @@ class RavePaySpec : Spek({
         }
 
         on("get banks called") {
-            val callback = mock<Callbacks.OnGetBanksRequestComplete>()
+            val callback = mock<RaveCallback<ApiResponse<List<Bank>>>>()
             ravePayMock.getBanks(callback)
 
             it("charge method method should be called") {

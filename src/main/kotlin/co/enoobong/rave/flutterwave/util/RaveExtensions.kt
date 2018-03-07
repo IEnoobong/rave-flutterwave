@@ -3,7 +3,6 @@ package co.enoobong.rave.flutterwave.util
 import co.enoobong.rave.flutterwave.data.ApiResponse
 import co.enoobong.rave.flutterwave.data.ErrorResponseData
 import com.google.gson.reflect.TypeToken
-import okhttp3.ResponseBody
 import java.lang.reflect.Type
 import java.security.MessageDigest
 import java.util.Base64
@@ -43,18 +42,9 @@ fun <T> T.toJsonString(): String {
     return GsonInstance.GSON.toJson(this, toType<T>())
 }
 
-const val errorParsingError = "An error occurred parsing the error response"
+internal const val errorParsingError = "An error occurred parsing the error response"
 
-fun ResponseBody?.toErrorDataResponse(): ApiResponse<ErrorResponseData> {
-    this?.let {
-        val type = object : TypeToken<ApiResponse<ErrorResponseData>>() {}.type
-        val errorString = it.string()
-        return GsonInstance.GSON.fromJson(errorString, type)
-    }
-    return ApiResponse("error", errorParsingError, null)
-}
-
-fun String?.toErrorDataResponse(): ApiResponse<ErrorResponseData> {
+internal fun String?.toErrorDataResponse(): ApiResponse<ErrorResponseData> {
     this?.let {
         val type = object : TypeToken<ApiResponse<ErrorResponseData>>() {}.type
         return GsonInstance.GSON.fromJson(this, type)
@@ -64,4 +54,13 @@ fun String?.toErrorDataResponse(): ApiResponse<ErrorResponseData> {
 
 fun <T> toType(): Type {
     return object : TypeToken<T>() {}.type
+}
+
+private const val TARGET = "FLWSECK-"
+
+internal fun encryptSecretKey(secretKey: String): String {
+    val md5Hash = secretKey.toMd5()
+    val cleanSecret = secretKey.replace(TARGET, "")
+    val hashLength = md5Hash.length
+    return cleanSecret.substring(0, 12) + md5Hash.substring(hashLength - 12, hashLength)
 }

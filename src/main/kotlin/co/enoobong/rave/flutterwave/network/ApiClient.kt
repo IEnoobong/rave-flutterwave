@@ -1,7 +1,8 @@
 package co.enoobong.rave.flutterwave.network
 
-import co.enoobong.rave.flutterwave.config.RavePayBuilder
+import co.enoobong.rave.flutterwave.config.RaveConstants
 import co.enoobong.rave.flutterwave.data.Environment
+import co.enoobong.rave.flutterwave.service.RavePayBuilder
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -18,41 +19,46 @@ internal object ApiClient {
     private var uniqueService: ApiService? = null
 
     val apiService: ApiService
-        @Synchronized get() {
+        get() {
             if (uniqueService == null) {
-                uniqueService = getService()
+                synchronized(this) {
+                    uniqueService = apiClient.create(ApiService::class.java)
+                }
             }
             return uniqueService!!
         }
 
-    private fun getService(): ApiService {
-        return apiClient.create(ApiService::class.java)
-    }
-
     private var uniqueClient: Retrofit? = null
 
     private val apiClient: Retrofit
-        @Synchronized get() {
+        get() {
             if (uniqueClient == null) {
-                val logging = HttpLoggingInterceptor()
-                logging.level =
-                        if (RavePayBuilder.whichEnvironment == Environment.STAGING) HttpLoggingInterceptor.Level.BODY
-                        else HttpLoggingInterceptor.Level.NONE
+                synchronized(this) {
+                    val logging = HttpLoggingInterceptor()
+                    val isStagingEnvironment =
+                        RavePayBuilder.getInstance().whichEnvironment == Environment.STAGING
+
+                    logging.level = if (isStagingEnvironment) HttpLoggingInterceptor.Level.BODY
+                    else HttpLoggingInterceptor.Level.NONE
 
 
-                val httpClient = OkHttpClient.Builder()
-                    .addNetworkInterceptor(logging)
-                    .connectTimeout(60, TimeUnit.SECONDS)
-                    .readTimeout(60, TimeUnit.SECONDS)
-                    .writeTimeout(60, TimeUnit.SECONDS)
-                    .build()
+                    val httpClient = OkHttpClient.Builder()
+                        .addNetworkInterceptor(logging)
+                        .connectTimeout(60, TimeUnit.SECONDS)
+                        .readTimeout(60, TimeUnit.SECONDS)
+                        .writeTimeout(60, TimeUnit.SECONDS)
+                        .build()
 
-                uniqueClient = Retrofit.Builder()
-                    .baseUrl(RavePayBuilder.getBaseUrl())
-                    .client(httpClient)
-                    .addConverterFactory(ScalarsConverterFactory.create())
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build()
+                    val baseUrl = if (isStagingEnvironment)
+                        RaveConstants.STAGING_URL else RaveConstants.LIVE_URL
+
+                    uniqueClient = Retrofit.Builder()
+                        .baseUrl(baseUrl)
+                        .client(httpClient)
+                        .addConverterFactory(ScalarsConverterFactory.create())
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build()
+                }
             }
             return uniqueClient!!
         }
