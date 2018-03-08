@@ -32,10 +32,10 @@ internal interface ApiService {
     fun getBanks(): Call<List<Bank>>
 
     @POST("/flwv3-pug/getpaidx/api/verify")
-    fun requeryTx(@Body body: RequeryRequestPayload): Call<String>
+    fun requeryTransaction(@Body body: RequeryRequestPayload): Call<String>
 
     @POST("/flwv3-pug/getpaidx/api/xrequery")
-    fun xRequeryTx(@Body body: XRequeryRequestPayload): Call<String>
+    fun xRequeryTransaction(@Body body: XRequeryRequestPayload): Call<String>
 
     @POST("/flwv3-pug/getpaidx/api/capture")
     fun capturePreauthorizeCard(@Body body: JsonObject): Call<String>

@@ -6,7 +6,7 @@ package co.enoobong.rave.flutterwave.service
  */
 interface RaveCallback<in T> {
 
-    fun onSuccess(response: T, responseAsString: String = "")
+    fun onSuccess(response: T, responseAsJsonString: String = "")
 
-    fun onError(message: String?, responseAsString: String? = "")
+    fun onError(message: String?, responseAsJsonString: String? = "")
 }

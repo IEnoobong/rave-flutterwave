@@ -1,7 +1,6 @@
 package co.enoobong.rave.flutterwave.data
 
 import com.google.gson.annotations.SerializedName
-import java.math.BigDecimal
 
 /**
  * @author Ibanga Enoobong I
@@ -9,7 +8,7 @@ import java.math.BigDecimal
  */
 sealed class Payload {
     abstract val PBFPubKey: String
-    abstract val amount: BigDecimal
+    abstract val amount: Double
     abstract val country: String
     abstract val currency: String
     abstract val email: String
@@ -28,7 +27,7 @@ data class CardPayload(
     @SerializedName("expiryyear") val expiryYear: String,
     override val currency: String,
     override val country: String,
-    override val amount: BigDecimal,
+    override val amount: Double,
     override val email: String,
     @SerializedName("phonenumber") override val phoneNumber: String,
     @SerializedName("firstName") override val firstName: String,
@@ -53,7 +52,7 @@ data class AccountPayload(
     @SerializedName("accountbank") val accountBank: String,
     override val currency: String,
     override val country: String,
-    override val amount: BigDecimal,
+    override val amount: Double,
     override val email: String,
     @SerializedName("phonenumber") override val phoneNumber: String,
     @SerializedName("lastname") override val firstName: String,
@@ -71,8 +70,8 @@ data class AccountPayload(
 }
 
 class Meta(
-    @SerializedName("metaname") val metaName: String, @SerializedName("metavalue") val
-    metaValue: String
+    @SerializedName("metaname") val metaName: String,
+    @SerializedName("metavalue") val metaValue: String
 )
 
 data class RavePayload(val hash: String, val dynamicValue: String)
@@ -100,9 +99,9 @@ data class Bank(
 data class ApiResponse<out T>(val status: String, val message: String, val data: T?)
 
 data class ChargeResponseData(
-    @SerializedName("suggested_auth") val suggestedAuth: String, val
-    chargeResponseCode: String, val authModelUsed: String, val flwRef: String, val
-    chargeResponseMessage: String, @SerializedName("authurl") val authUrl: String
+    @SerializedName("suggested_auth") val suggestedAuth: String,
+    val chargeResponseCode: String, val authModelUsed: String, val flwRef: String,
+    val chargeResponseMessage: String, @SerializedName("authurl") val authUrl: String
 )
 
 data class ErrorResponseData(
@@ -111,8 +110,9 @@ data class ErrorResponseData(
 )
 
 data class ValidateChargePayload(
-    val PBFPubKey: String, @SerializedName("transaction_reference")
-    val transactionRef: String, val otp: String
+    val PBFPubKey: String,
+    @SerializedName("transaction_reference") val transactionRef: String,
+    val otp: String
 )
 
 data class RequeryRequestPayload @JvmOverloads constructor(
@@ -134,9 +134,8 @@ data class RequeryResponseData(
     @SerializedName("tx_ref") val transactionRef: String,
     @SerializedName("flw_ref") val flwRef: String,
     @SerializedName("transaction_currency") val currency: String,
-    val amount: BigDecimal,
-    @SerializedName("charged_amount")
-    val chargedAmount: BigDecimal,
+    val amount: Long,
+    @SerializedName("charged_amount") val chargedAmount: Long,
     val card: CardDetails,
     val flwMeta: FlutterWaveMeta
 )
@@ -144,26 +143,26 @@ data class RequeryResponseData(
 data class FlutterWaveMeta(val chargeResponse: String, val chargeResponseMessage: String)
 
 data class CardDetails(
-    val cardBIN: String, @SerializedName("card_tokens") val cardTokens:
-    List<CardToken>, val brand: String, @SerializedName("expirymonth") val expiryMonth: String,
+    val cardBIN: String, @SerializedName("card_tokens") val cardTokens: List<CardToken>,
+    val brand: String, @SerializedName("expirymonth") val expiryMonth: String,
     @SerializedName("expiryyear") val expiryYear: String, val last4digits: String
 )
 
 data class CardToken(
-    @SerializedName("shortcode") val shortCode: String, @SerializedName
-        ("embedtoken") val embedToken: String
+    @SerializedName("shortcode") val shortCode: String,
+    @SerializedName("embedtoken") val embedToken: String
 )
 
 data class XRequeryResponseData(
-    @SerializedName("txid") val txId: Int,
+    @SerializedName("txid") val transactionId: Int,
     @SerializedName("txref") val transactionRef: String,
     @SerializedName("flwref") val flwRef: String,
     @SerializedName("devicefingerprint") val deviceFingerprint: String,
     @SerializedName("cycle") val cycle: String,
-    @SerializedName("amount") val amount: Int,
+    @SerializedName("amount") val amount: Long,
     @SerializedName("currency") val currency: String,
-    @SerializedName("chargedamount") val chargedAmount: Double,
-    @SerializedName("appfee") val appFee: Double,
+    @SerializedName("chargedamount") val chargedAmount: Long,
+    @SerializedName("appfee") val appFee: Int,
     @SerializedName("merchantfee") val merchantFee: Int,
     @SerializedName("merchantbearsfee") val merchantBearsFee: Int,
     @SerializedName("chargecode") val chargeCode: String,
@@ -209,9 +208,9 @@ data class PreauthorizeCardData(
     @SerializedName("redirectUrl") val redirectUrl: String,
     @SerializedName("device_fingerprint") val deviceFingerprint: String,
     @SerializedName("cycle") val cycle: String,
-    @SerializedName("amount") val amount: Int,
-    @SerializedName("charged_amount") val chargedAmount: Double,
-    @SerializedName("appfee") val appFee: Double,
+    @SerializedName("amount") val amount: Long,
+    @SerializedName("charged_amount") val chargedAmount: Long,
+    @SerializedName("appfee") val appFee: Int,
     @SerializedName("merchantfee") val merchantFee: Int,
     @SerializedName("merchantbearsfee") val merchantBearsFee: Int,
     @SerializedName("chargeResponseCode") val chargeResponseCode: String,
@@ -267,7 +266,7 @@ data class RefundVoidResponseExtraData(
  * it also helps determine international fees on the transaction if the card being used is
  * an international card
  */
-data class GetFeesPayload(val amount: BigDecimal, val PBFPubKey: String, val currency: String) {
+data class GetFeesPayload(val amount: Double, val PBFPubKey: String, val currency: String) {
 
     @SerializedName("ptype")
     var paymentType: String? = null
@@ -278,13 +277,13 @@ data class GetFeesPayload(val amount: BigDecimal, val PBFPubKey: String, val cur
 
 data class GetFeeResponseData(
     @SerializedName("charge_amount") val chargeAmount: Double,
-    val fee: Double, @SerializedName("merchantfee") val merchantFee: Double,
-    @SerializedName("ravefee") val raveFee: Double
+    val fee: Double, @SerializedName("merchantfee") val merchantFee: String,
+    @SerializedName("ravefee") val raveFee: String
 )
 
 
 data class RefundResponseData(
-    @SerializedName("AmountRefunded") val amountRefunded: Double,
+    @SerializedName("AmountRefunded") val amountRefunded: Long,
     val walletId: Int,
     val createdAt: String, @SerializedName("AccountId") val accountId: Int,
     val id: Int,
