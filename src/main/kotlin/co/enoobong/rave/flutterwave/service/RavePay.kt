@@ -542,4 +542,24 @@ class RavePay private constructor(private val ravePayBuilder: Builder) {
         })
 
     }
+
+    /**
+     * This is currently only available for GTB and Zenith Bank.
+     *
+     * FOR GTB you need to display {@literal *737*50*amount*159#} and the <code>flwRef</code>
+     * returned for the customer to complete the transaction
+     *
+     * Use webhooks to get notified on transaction, and set it to pending, then complete/failed
+     * once notified with same status on webhook. See guide on using webhooks here:
+     * @see <a href="https://flutterwavedevelopers.readme.io/v2
+     * .0/docs/events-webhooks">Flutterwave Rave Documentation</a> for how to use webhook
+     *
+     * After notification requery and confirm final status.
+     */
+    fun ussdCharge(
+        payload: AccountPayload,
+        callback: RaveCallback<ApiResponse<ChargeResponseData>>
+    ) {
+        makeCharge(payload.toJsonString(), payload.publicKey, callback)
+    }
 }

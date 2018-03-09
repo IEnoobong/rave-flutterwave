@@ -16,50 +16,35 @@ import java.util.concurrent.TimeUnit
  * @since 2/27/18.
  */
 internal object ApiClient {
-    private var uniqueService: ApiService? = null
 
     val apiService: ApiService
-        get() {
-            if (uniqueService == null) {
-                synchronized(this) {
-                    uniqueService = apiClient.create(ApiService::class.java)
-                }
-            }
-            return uniqueService!!
-        }
-
-    private var uniqueClient: Retrofit? = null
+        get() = apiClient.create(ApiService::class.java)
 
     private val apiClient: Retrofit
         get() {
-            if (uniqueClient == null) {
-                synchronized(this) {
-                    val logging = HttpLoggingInterceptor()
-                    val isStagingEnvironment =
-                        RavePay.Builder().whichEnvironment == Environment.STAGING
+            val logging = HttpLoggingInterceptor()
+            val isStagingEnvironment =
+                RavePay.Builder().whichEnvironment == Environment.STAGING
 
-                    logging.level = if (isStagingEnvironment) HttpLoggingInterceptor.Level.BODY
-                    else HttpLoggingInterceptor.Level.NONE
+            logging.level = if (isStagingEnvironment) HttpLoggingInterceptor.Level.BODY
+            else HttpLoggingInterceptor.Level.NONE
 
 
-                    val httpClient = OkHttpClient.Builder()
-                        .addNetworkInterceptor(logging)
-                        .connectTimeout(60, TimeUnit.SECONDS)
-                        .readTimeout(60, TimeUnit.SECONDS)
-                        .writeTimeout(60, TimeUnit.SECONDS)
-                        .build()
+            val httpClient = OkHttpClient.Builder()
+                .addNetworkInterceptor(logging)
+                .connectTimeout(60, TimeUnit.SECONDS)
+                .readTimeout(60, TimeUnit.SECONDS)
+                .writeTimeout(60, TimeUnit.SECONDS)
+                .build()
 
-                    val baseUrl = if (isStagingEnvironment)
-                        RaveConstants.STAGING_URL else RaveConstants.LIVE_URL
+            val baseUrl = if (isStagingEnvironment)
+                RaveConstants.STAGING_URL else RaveConstants.LIVE_URL
 
-                    uniqueClient = Retrofit.Builder()
-                        .baseUrl(baseUrl)
-                        .client(httpClient)
-                        .addConverterFactory(ScalarsConverterFactory.create())
-                        .addConverterFactory(GsonConverterFactory.create())
-                        .build()
-                }
-            }
-            return uniqueClient!!
+            return Retrofit.Builder()
+                .baseUrl(baseUrl)
+                .client(httpClient)
+                .addConverterFactory(ScalarsConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
         }
 }
