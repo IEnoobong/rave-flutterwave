@@ -2,7 +2,7 @@ package co.enoobong.rave.flutterwave.network
 
 import co.enoobong.rave.flutterwave.config.RaveConstants
 import co.enoobong.rave.flutterwave.data.Environment
-import co.enoobong.rave.flutterwave.service.RavePayBuilder
+import co.enoobong.rave.flutterwave.service.RavePay
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -36,7 +36,7 @@ internal object ApiClient {
                 synchronized(this) {
                     val logging = HttpLoggingInterceptor()
                     val isStagingEnvironment =
-                        RavePayBuilder.getInstance().whichEnvironment == Environment.STAGING
+                        RavePay.Builder().whichEnvironment == Environment.STAGING
 
                     logging.level = if (isStagingEnvironment) HttpLoggingInterceptor.Level.BODY
                     else HttpLoggingInterceptor.Level.NONE

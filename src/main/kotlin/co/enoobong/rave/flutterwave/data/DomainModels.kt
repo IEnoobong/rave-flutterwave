@@ -6,34 +6,25 @@ import com.google.gson.annotations.SerializedName
  * @author Ibanga Enoobong I
  * @since 2/27/18.
  */
-sealed class Payload {
-    abstract val PBFPubKey: String
-    abstract val amount: Double
-    abstract val country: String
-    abstract val currency: String
-    abstract val email: String
-    abstract val phoneNumber: String
-    abstract val IP: String
-    abstract val firstName: String
-    abstract val lastName: String
-    abstract val transactionRef: String
-}
+sealed class Payload
 
 data class CardPayload(
-    override val PBFPubKey: String,
+    @SerializedName("PBFPubKey")
+    val publicKey: String,
     @SerializedName("cardno") val cardNumber: String,
     val cvv: String,
     @SerializedName("expirymonth") val expiryMonth: String,
     @SerializedName("expiryyear") val expiryYear: String,
-    override val currency: String,
-    override val country: String,
-    override val amount: Double,
-    override val email: String,
-    @SerializedName("phonenumber") override val phoneNumber: String,
-    @SerializedName("firstName") override val firstName: String,
-    @SerializedName("lastname") override val lastName: String,
-    override val IP: String,
-    @SerializedName("txRef") override val transactionRef: String,
+    val currency: String,
+    val country: String,
+    val amount: Double,
+    val email: String,
+    @SerializedName("phonenumber") val phoneNumber: String,
+    @SerializedName("firstName") val firstName: String,
+    @SerializedName("lastname") val lastName: String,
+    @SerializedName("IP")
+    val IP: String,
+    @SerializedName("txRef") val transactionRef: String,
     @SerializedName("redirect_url") val redirectUrl: String
 ) : Payload() {
 
@@ -47,18 +38,20 @@ data class CardPayload(
 }
 
 data class AccountPayload(
-    override val PBFPubKey: String,
+    @SerializedName("PBFPubKey")
+    val publicKey: String,
     @SerializedName("accountnumber") val accountNumber: String,
     @SerializedName("accountbank") val accountBank: String,
-    override val currency: String,
-    override val country: String,
-    override val amount: Double,
-    override val email: String,
-    @SerializedName("phonenumber") override val phoneNumber: String,
-    @SerializedName("lastname") override val firstName: String,
-    @SerializedName("lastname") override val lastName: String,
-    override val IP: String,
-    @SerializedName("txRef") override val transactionRef: String,
+    val currency: String,
+    val country: String,
+    val amount: Double,
+    val email: String,
+    @SerializedName("phonenumber") val phoneNumber: String,
+    @SerializedName("lastname") val firstName: String,
+    @SerializedName("lastname") val lastName: String,
+    @SerializedName("IP")
+    val ipAddress: String,
+    @SerializedName("txRef") val transactionRef: String,
     @SerializedName("payment_type") val paymentType: String
 ) : Payload() {
     //Only used for Zenith bank account payment) (Format: DDMMYYYY e.g. 21051990)
@@ -82,7 +75,8 @@ enum class Environment {
 }
 
 internal data class ChargeRequest(
-    val PBFPubKey: String,
+    @SerializedName("PBFPubKey")
+    val publicKey: String,
     val client: String,
     val alg: String = "3DES-24"
 )
@@ -110,7 +104,8 @@ data class ErrorResponseData(
 )
 
 data class ValidateChargePayload(
-    val PBFPubKey: String,
+    @SerializedName("PBFPubKey")
+    val publicKey: String,
     @SerializedName("transaction_reference") val transactionRef: String,
     val otp: String
 )
@@ -118,7 +113,8 @@ data class ValidateChargePayload(
 data class RequeryRequestPayload @JvmOverloads constructor(
     @SerializedName("flw_ref") val flwRef: String, val normalize: String = "1"
 ) {
-    var SECKEY: String = ""
+    @SerializedName("SECKEY")
+    var secretKey: String = ""
 }
 
 data class XRequeryRequestPayload @JvmOverloads constructor(
@@ -127,7 +123,8 @@ data class XRequeryRequestPayload @JvmOverloads constructor(
     @SerializedName("last_attempt") var lastAttempt: String = "",
     @SerializedName("only_successful") var onlySuccessful: String = ""
 ) {
-    var SECKEY: String = ""
+    @SerializedName("SECKEY")
+    var secretKey: String = ""
 }
 
 data class RequeryResponseData(
@@ -266,7 +263,10 @@ data class RefundVoidResponseExtraData(
  * it also helps determine international fees on the transaction if the card being used is
  * an international card
  */
-data class GetFeesPayload(val amount: Double, val PBFPubKey: String, val currency: String) {
+data class GetFeesPayload(
+    val amount: Double, @SerializedName("PBFPubKey") val publicKey: String,
+    val currency: String
+) {
 
     @SerializedName("ptype")
     var paymentType: String? = null

@@ -6,6 +6,7 @@ import co.enoobong.rave.flutterwave.data.Bank
 import co.enoobong.rave.flutterwave.data.CardPayload
 import co.enoobong.rave.flutterwave.data.ChargeRequest
 import co.enoobong.rave.flutterwave.data.ChargeResponseData
+import co.enoobong.rave.flutterwave.data.Environment
 import co.enoobong.rave.flutterwave.data.ExchangeRateData
 import co.enoobong.rave.flutterwave.data.GetFeeResponseData
 import co.enoobong.rave.flutterwave.data.GetFeesPayload
@@ -18,7 +19,6 @@ import co.enoobong.rave.flutterwave.data.ValidateChargePayload
 import co.enoobong.rave.flutterwave.data.XRequeryRequestPayload
 import co.enoobong.rave.flutterwave.data.XRequeryResponseData
 import co.enoobong.rave.flutterwave.network.ApiClient
-import co.enoobong.rave.flutterwave.util.SingletonHolder
 import co.enoobong.rave.flutterwave.util.encryptRequest
 import co.enoobong.rave.flutterwave.util.encryptSecretKey
 import co.enoobong.rave.flutterwave.util.errorParsingError
@@ -41,10 +41,43 @@ import java.util.logging.Logger
  * @author Ibanga Enoobong I
  * @since 3/2/18.
  */
-class RavePay private constructor(private val secretKey: String) {
-    internal companion object : SingletonHolder<RavePay, String>(::RavePay) {
+class RavePay private constructor(private val ravePayBuilder: Builder) {
+
+    companion object {
         private val L = Logger.getLogger(RavePay::class.java.name)
         internal val GSON = Gson()
+
+
+        @JvmStatic
+        @JvmName("create")
+        operator fun invoke(ravePayBuilder: Builder): RavePay {
+            return RavePay(ravePayBuilder)
+        }
+    }
+
+    class Builder {
+        internal var whichEnvironment = Environment.STAGING
+            private set
+        internal var userSecretKey = ""
+            private set
+
+        fun setEnvironment(environment: Environment) = this.also {
+            whichEnvironment = environment
+        }
+
+
+        fun setSecurityKey(secretKey: String) = this.also {
+            userSecretKey = secretKey
+        }
+
+
+        fun build(): RavePay {
+            if (userSecretKey.isEmpty() or userSecretKey.isBlank()) {
+                L.severe("Secret Key was empty or blank")
+                throw IllegalArgumentException("Secret key cannot be empty or blank")
+            }
+            return RavePay(this)
+        }
     }
 
     private val apiService = ApiClient.apiService
@@ -56,14 +89,14 @@ class RavePay private constructor(private val secretKey: String) {
         payload: CardPayload,
         callback: RaveCallback<ApiResponse<ChargeResponseData>>
     ) {
-        makeCharge(payload.toJsonString(), payload.PBFPubKey, callback)
+        makeCharge(payload.toJsonString(), payload.publicKey, callback)
     }
 
     fun chargeAccount(
         payload: AccountPayload,
         callback: RaveCallback<ApiResponse<ChargeResponseData>>
     ) {
-        makeCharge(payload.toJsonString(), payload.PBFPubKey, callback)
+        makeCharge(payload.toJsonString(), payload.publicKey, callback)
     }
 
     private fun makeCharge(
@@ -73,7 +106,8 @@ class RavePay private constructor(private val secretKey: String) {
     ) {
 
 
-        val encryptedRequest = encryptRequest(payload, encryptSecretKey(secretKey))
+        val encryptedRequest =
+            encryptRequest(payload, encryptSecretKey(ravePayBuilder.userSecretKey))
 
 
         val chargeRequest = ChargeRequest(publicKey, encryptedRequest)
@@ -174,7 +208,7 @@ class RavePay private constructor(private val secretKey: String) {
         callback: RaveCallback<ApiResponse<RequeryResponseData>>
     ) {
 
-        requeryRequestPayload.SECKEY = secretKey
+        requeryRequestPayload.secretKey = ravePayBuilder.userSecretKey
 
         apiService.requeryTransaction(requeryRequestPayload).enqueue(object : Callback<String> {
             override fun onFailure(call: Call<String>?, t: Throwable) {
@@ -212,7 +246,7 @@ class RavePay private constructor(private val secretKey: String) {
         xRequeryRequestPayload: XRequeryRequestPayload, callback:
         RaveCallback<ApiResponse<@JvmSuppressWildcards List<XRequeryResponseData>>>
     ) {
-        xRequeryRequestPayload.SECKEY = secretKey
+        xRequeryRequestPayload.secretKey = ravePayBuilder.userSecretKey
 
         apiService.xRequeryTransaction(xRequeryRequestPayload).enqueue(object : Callback<String> {
             override fun onFailure(call: Call<String>?, t: Throwable) {
@@ -283,9 +317,10 @@ class RavePay private constructor(private val secretKey: String) {
         cardPayload.chargeType = "preauth"
 
         val requestAsJsonString = cardPayload.toJsonString()
-        val encryptedRequest = encryptRequest(requestAsJsonString, encryptSecretKey(secretKey))
+        val encryptedRequest =
+            encryptRequest(requestAsJsonString, encryptSecretKey(ravePayBuilder.userSecretKey))
 
-        val chargeRequest = ChargeRequest(cardPayload.PBFPubKey, encryptedRequest)
+        val chargeRequest = ChargeRequest(cardPayload.publicKey, encryptedRequest)
 
         apiService.directCharge(chargeRequest).enqueue(object : Callback<String> {
 
@@ -316,7 +351,7 @@ class RavePay private constructor(private val secretKey: String) {
     ) {
         val jsonObject = JsonObject()
         jsonObject.addProperty("flwRef", flwRef)
-        jsonObject.addProperty("SECKEY", secretKey)
+        jsonObject.addProperty("SECKEY", ravePayBuilder.userSecretKey)
 
         apiService.capturePreauthorizeCard(jsonObject).enqueue(object : Callback<String> {
             override fun onFailure(call: Call<String>?, t: Throwable) {
@@ -355,7 +390,7 @@ class RavePay private constructor(private val secretKey: String) {
         val jsonObject = JsonObject()
         jsonObject.addProperty("ref", flwRef)
         jsonObject.addProperty("action", action)
-        jsonObject.addProperty("SECKEY", secretKey)
+        jsonObject.addProperty("SECKEY", ravePayBuilder.userSecretKey)
 
         apiService.refundOrVoidPreauthorization(jsonObject).enqueue(object : Callback<String> {
             override fun onFailure(call: Call<String>?, t: Throwable) {
@@ -432,7 +467,7 @@ class RavePay private constructor(private val secretKey: String) {
     fun refundTransaction(flwRef: String, callback: RaveCallback<ApiResponse<RefundResponseData>>) {
         val jsonObject = JsonObject()
         jsonObject.addProperty("ref", flwRef)
-        jsonObject.addProperty("seckey", secretKey)
+        jsonObject.addProperty("seckey", ravePayBuilder.userSecretKey)
 
         apiService.refundTransaction(jsonObject).enqueue(object : Callback<String> {
             override fun onFailure(call: Call<String>?, t: Throwable) {
@@ -482,7 +517,7 @@ class RavePay private constructor(private val secretKey: String) {
         jsonObject.addProperty("origin_currency", originCurrency)
         jsonObject.addProperty("destination_currency", destinationCurrency)
         jsonObject.addProperty("amount", amount)
-        jsonObject.addProperty("SECKEY", secretKey)
+        jsonObject.addProperty("SECKEY", ravePayBuilder.userSecretKey)
 
         apiService.convertCurrency(jsonObject).enqueue(object : Callback<String> {
             override fun onFailure(call: Call<String>?, t: Throwable) {
