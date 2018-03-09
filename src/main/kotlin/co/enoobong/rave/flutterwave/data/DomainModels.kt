@@ -9,8 +9,6 @@ import com.google.gson.annotations.SerializedName
 sealed class Payload
 
 data class CardPayload(
-    @SerializedName("PBFPubKey")
-    val publicKey: String,
     @SerializedName("cardno") val cardNumber: String,
     val cvv: String,
     @SerializedName("expirymonth") val expiryMonth: String,
@@ -59,8 +57,6 @@ data class CardPayload(
  * @property isMpesa This identifies that an mpesa transaction is being carried out.
  */
 data class AccountPayload(
-    @SerializedName("PBFPubKey")
-    val publicKey: String,
     @SerializedName("accountnumber") val accountNumber: String,
     @SerializedName("accountbank") val accountBank: String,
     val currency: String,
@@ -75,6 +71,7 @@ data class AccountPayload(
     @SerializedName("txRef") val transactionRef: String,
     @SerializedName("payment_type") val paymentType: String
 ) : Payload() {
+
     //Only used for Zenith bank account payment) (Format: DDMMYYYY e.g. 21051990)
     @SerializedName("passcode")
     val passCode: String? = null
@@ -100,11 +97,12 @@ enum class Environment {
 }
 
 internal data class ChargeRequest(
-    @SerializedName("PBFPubKey")
-    val publicKey: String,
     val client: String,
     val alg: String = "3DES-24"
-)
+) {
+    @SerializedName("PBFPubKey")
+    var publicKey: String? = null
+}
 
 data class Bank(
     @SerializedName("bankname")
@@ -129,11 +127,12 @@ data class ErrorResponseData(
 )
 
 data class ValidateChargePayload(
-    @SerializedName("PBFPubKey")
-    val publicKey: String,
     @SerializedName("transaction_reference") val transactionRef: String,
     val otp: String
-)
+) {
+    @SerializedName("PBFPubKey")
+    var publicKey: String? = null
+}
 
 data class RequeryRequestPayload @JvmOverloads constructor(
     @SerializedName("flw_ref") val flwRef: String, val normalize: String = "1"
@@ -289,9 +288,12 @@ data class RefundVoidResponseExtraData(
  * an international card
  */
 data class GetFeesPayload(
-    val amount: Double, @SerializedName("PBFPubKey") val publicKey: String,
+    val amount: Double,
     val currency: String
 ) {
+
+    @SerializedName("PBFPubKey")
+    var publicKey: String? = null
 
     @SerializedName("ptype")
     var paymentType: String? = null

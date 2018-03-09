@@ -60,21 +60,27 @@ class RavePay private constructor(private val ravePayBuilder: Builder) {
             private set
         internal var userSecretKey = ""
             private set
+        internal var userPublicKey = ""
+            private set
 
         fun setEnvironment(environment: Environment) = this.also {
             whichEnvironment = environment
         }
 
 
-        fun setSecurityKey(secretKey: String) = this.also {
+        fun setSecretKey(secretKey: String) = this.also {
             userSecretKey = secretKey
+        }
+
+        fun setPublicKey(publickey: String) = this.also {
+            userPublicKey = publickey
         }
 
 
         fun build(): RavePay {
-            if (userSecretKey.isEmpty() or userSecretKey.isBlank()) {
-                L.severe("Secret Key was empty or blank")
-                throw IllegalArgumentException("Secret key cannot be empty or blank")
+            if (userSecretKey.isBlank() or userPublicKey.isBlank()) {
+                L.severe("Secret/Public Key was empty")
+                throw IllegalArgumentException("Secret/Public key cannot be empty or blank")
             }
             return RavePay(this)
         }
@@ -89,14 +95,14 @@ class RavePay private constructor(private val ravePayBuilder: Builder) {
         payload: CardPayload,
         callback: RaveCallback<ApiResponse<ChargeResponseData>>
     ) {
-        makeCharge(payload.toJsonString(), payload.publicKey, callback)
+        makeCharge(payload.toJsonString(), ravePayBuilder.userPublicKey, callback)
     }
 
     fun chargeAccount(
         payload: AccountPayload,
         callback: RaveCallback<ApiResponse<ChargeResponseData>>
     ) {
-        makeCharge(payload.toJsonString(), payload.publicKey, callback)
+        makeCharge(payload.toJsonString(), ravePayBuilder.userPublicKey, callback)
     }
 
     private fun makeCharge(
@@ -110,7 +116,8 @@ class RavePay private constructor(private val ravePayBuilder: Builder) {
             encryptRequest(payload, encryptSecretKey(ravePayBuilder.userSecretKey))
 
 
-        val chargeRequest = ChargeRequest(publicKey, encryptedRequest)
+        val chargeRequest = ChargeRequest(encryptedRequest)
+        chargeRequest.publicKey = ravePayBuilder.userPublicKey
 
         apiService.directCharge(chargeRequest).enqueue(object : Callback<String> {
 
@@ -173,6 +180,9 @@ class RavePay private constructor(private val ravePayBuilder: Builder) {
         callback: RaveCallback<ApiResponse<ChargeResponseData>>,
         isAccountCharge: Boolean
     ) {
+
+        validateCharge.publicKey = ravePayBuilder.userPublicKey
+
         val call = if (isAccountCharge) {
             apiService.validateAccountCharge(validateCharge)
         } else {
@@ -314,13 +324,16 @@ class RavePay private constructor(private val ravePayBuilder: Builder) {
         cardPayload: CardPayload, callback:
         RaveCallback<ApiResponse<PreauthorizeCardData>>
     ) {
-        cardPayload.chargeType = "preauth"
+        cardPayload.apply {
+            chargeType = "preauth"
+        }
 
         val requestAsJsonString = cardPayload.toJsonString()
         val encryptedRequest =
             encryptRequest(requestAsJsonString, encryptSecretKey(ravePayBuilder.userSecretKey))
 
-        val chargeRequest = ChargeRequest(cardPayload.publicKey, encryptedRequest)
+        val chargeRequest = ChargeRequest(encryptedRequest)
+        chargeRequest.publicKey = ravePayBuilder.userPublicKey
 
         apiService.directCharge(chargeRequest).enqueue(object : Callback<String> {
 
@@ -434,6 +447,8 @@ class RavePay private constructor(private val ravePayBuilder: Builder) {
         getFeesPayload: GetFeesPayload, callback:
         RaveCallback<ApiResponse<GetFeeResponseData>>
     ) {
+        getFeesPayload.publicKey = ravePayBuilder.userPublicKey
+
         apiService.getFees(getFeesPayload).enqueue(object : Callback<String> {
             override fun onFailure(call: Call<String>?, t: Throwable) {
                 callback.onError(t.message)
@@ -560,6 +575,6 @@ class RavePay private constructor(private val ravePayBuilder: Builder) {
         payload: AccountPayload,
         callback: RaveCallback<ApiResponse<ChargeResponseData>>
     ) {
-        makeCharge(payload.toJsonString(), payload.publicKey, callback)
+        makeCharge(payload.toJsonString(), ravePayBuilder.userPublicKey, callback)
     }
 }
