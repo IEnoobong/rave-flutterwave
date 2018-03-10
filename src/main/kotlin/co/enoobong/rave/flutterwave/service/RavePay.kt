@@ -117,7 +117,7 @@ class RavePay private constructor(private val ravePayBuilder: Builder) {
 
 
         val chargeRequest = ChargeRequest(encryptedRequest)
-        chargeRequest.publicKey = ravePayBuilder.userPublicKey
+        chargeRequest.publicKey = publicKey
 
         apiService.directCharge(chargeRequest).enqueue(object : Callback<String> {
 
