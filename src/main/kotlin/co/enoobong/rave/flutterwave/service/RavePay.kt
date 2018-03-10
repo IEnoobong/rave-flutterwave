@@ -47,9 +47,7 @@ class RavePay private constructor(private val ravePayBuilder: Builder) {
         private val L = Logger.getLogger(RavePay::class.java.name)
         internal val GSON = Gson()
 
-
         @JvmStatic
-        @JvmName("create")
         private operator fun invoke(ravePayBuilder: Builder): RavePay {
             return RavePay(ravePayBuilder)
         }
@@ -67,7 +65,6 @@ class RavePay private constructor(private val ravePayBuilder: Builder) {
             whichEnvironment = environment
         }
 
-
         fun setSecretKey(secretKey: String) = this.also {
             userSecretKey = secretKey
         }
@@ -75,7 +72,6 @@ class RavePay private constructor(private val ravePayBuilder: Builder) {
         fun setPublicKey(publicKey: String) = this.also {
             userPublicKey = publicKey
         }
-
 
         fun build(): RavePay {
             if (userSecretKey.isBlank() or userPublicKey.isBlank()) {
@@ -86,7 +82,7 @@ class RavePay private constructor(private val ravePayBuilder: Builder) {
         }
     }
 
-    internal var apiService = ApiClient.apiService
+    internal var apiService = ApiClient.createApiService(ravePayBuilder.whichEnvironment)
 
     /**
      * @param payload Payload object
