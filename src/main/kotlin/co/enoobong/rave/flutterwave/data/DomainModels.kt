@@ -36,8 +36,6 @@ data class CardPayload(
 }
 
 /**
- *
- * @param publicKey This is a unique key generated for each button created on Rave’s dashboard. It starts with a prefix FLWPUBK and ends with suffix X.
  * @param accountNumber This is the account number of the customer associated with a valid bank account.
  * @param accountBank This represents the bank account to be debited. To get a list of banks,
  * call bank list API {@link RavePay#getBanks()}
@@ -64,7 +62,7 @@ data class AccountPayload(
     val amount: Double,
     val email: String,
     @SerializedName("phonenumber") val phoneNumber: String,
-    @SerializedName("lastname") val firstName: String,
+    @SerializedName("firstname") val firstName: String,
     @SerializedName("lastname") val lastName: String,
     @SerializedName("IP")
     val ipAddress: String,
@@ -74,13 +72,19 @@ data class AccountPayload(
 
     //Only used for Zenith bank account payment) (Format: DDMMYYYY e.g. 21051990)
     @SerializedName("passcode")
-    val passCode: String? = null
+    var passCode: String? = null
 
     @SerializedName("device_fingerprint")
     var deviceFingerprint: String? = null
 
+    var isUssd: Boolean
+        get() = intUssd == 1
+        set(value) {
+            intUssd = if (value) 1 else null
+        }
+
     @SerializedName("is_ussd")
-    var isUssd: Int? = null
+    private var intUssd: Int? = null
 
     @SerializedName("is_mobile_money_gh")
     var isMobileMoneyGh: Int? = null
