@@ -50,14 +50,14 @@ class RavePay private constructor(private val ravePayBuilder: Builder) {
 
         @JvmStatic
         @JvmName("create")
-        operator fun invoke(ravePayBuilder: Builder): RavePay {
+        private operator fun invoke(ravePayBuilder: Builder): RavePay {
             return RavePay(ravePayBuilder)
         }
     }
 
     class Builder {
         internal var whichEnvironment = Environment.STAGING
-            private set
+
         internal var userSecretKey = ""
             private set
         internal var userPublicKey = ""
@@ -72,8 +72,8 @@ class RavePay private constructor(private val ravePayBuilder: Builder) {
             userSecretKey = secretKey
         }
 
-        fun setPublicKey(publickey: String) = this.also {
-            userPublicKey = publickey
+        fun setPublicKey(publicKey: String) = this.also {
+            userPublicKey = publicKey
         }
 
 
@@ -86,7 +86,7 @@ class RavePay private constructor(private val ravePayBuilder: Builder) {
         }
     }
 
-    private val apiService = ApiClient.apiService
+    internal var apiService = ApiClient.apiService
 
     /**
      * @param payload Payload object
