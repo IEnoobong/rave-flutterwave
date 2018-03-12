@@ -1,4 +1,3 @@
-[![CircleCI](https://circleci.com/gh/IEnoobong/rave-flutterwave/tree/master.svg?style=svg)](https://circleci.com/gh/IEnoobong/rave-flutterwave/tree/master)
 [![CircleCI](https://circleci.com/gh/IEnoobong/rave-flutterwave/tree/master.svg?style=svg&circle-token=bf3c59fc49a5438c0c09665e65451dc225ab371f)](https://circleci.com/gh/IEnoobong/rave-flutterwave/tree/master)
 
 # Rave-Flutterwave-Kotlin
