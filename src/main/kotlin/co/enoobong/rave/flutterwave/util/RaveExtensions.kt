@@ -31,8 +31,7 @@ internal const val errorParsingError = "An error occurred while parsing the erro
 
 internal fun String?.toErrorDataResponse(): ApiResponse<ErrorResponseData> {
     this?.let {
-        val type = object : TypeToken<ApiResponse<ErrorResponseData>>() {}.type
-        return RavePay.GSON.fromJson(this, type)
+        return RavePay.GSON.fromJson(it)
     }
     return ApiResponse("error", errorParsingError, null)
 }

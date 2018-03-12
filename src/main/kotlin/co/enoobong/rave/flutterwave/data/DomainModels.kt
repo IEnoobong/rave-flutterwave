@@ -328,7 +328,7 @@ data class RefundResponseData(
 data class ExchangeRateData(
     @SerializedName("responsecode") val responseCode: String?,
     @SerializedName("responsemessage") val responseMessage: String?,
-    val rate: Int?, @SerializedName("origincurrency") val originCurrency: String?,
+    val rate: Double?, @SerializedName("origincurrency") val originCurrency: String?,
     @SerializedName("destinationcurrency") val destinationCurrency: String?,
     @SerializedName("lastupdated") val lastUpdated: String?,
     @SerializedName("converted_amount") val convertedAmount: Long?,
