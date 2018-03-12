@@ -106,11 +106,8 @@ class RavePay private constructor(private val ravePayBuilder: Builder) {
         publicKey: String,
         callback: RaveCallback<ApiResponse<ChargeResponseData>>
     ) {
-
-
         val encryptedRequest =
             encryptRequest(payload, encryptSecretKey(ravePayBuilder.userSecretKey))
-
 
         val chargeRequest = ChargeRequest(encryptedRequest)
         chargeRequest.publicKey = publicKey
@@ -120,9 +117,14 @@ class RavePay private constructor(private val ravePayBuilder: Builder) {
             override fun onResponse(call: Call<String>?, response: Response<String>) {
                 if (response.isSuccessful) {
                     val responseAsJsonString = response.requireBody()
-                    val apiResponse =
-                        GSON.fromJson<ApiResponse<ChargeResponseData>>(responseAsJsonString)
-                    callback.onSuccess(apiResponse, responseAsJsonString)
+                    try {
+                        val apiResponse =
+                            GSON.fromJson<ApiResponse<ChargeResponseData>>(responseAsJsonString)
+                        callback.onSuccess(apiResponse, responseAsJsonString)
+                    } catch (ex: Exception) {
+                        L.severe(ex.message)
+                        callback.onError(errorParsingError, responseAsJsonString)
+                    }
 
                 } else {
                     val errorString = response.errorBody()?.string()
@@ -193,13 +195,14 @@ class RavePay private constructor(private val ravePayBuilder: Builder) {
             override fun onResponse(call: Call<String>?, response: Response<String>) {
                 if (response.isSuccessful) {
                     val responseAsJsonString = response.requireBody()
-                    val apiResponse =
-                        GSON.fromJson<ApiResponse<ChargeResponseData>>(
-                            responseAsJsonString
-                        )
-                    callback.onSuccess(apiResponse, responseAsJsonString)
-
-
+                    try {
+                        val apiResponse =
+                            GSON.fromJson<ApiResponse<ChargeResponseData>>(responseAsJsonString)
+                        callback.onSuccess(apiResponse, responseAsJsonString)
+                    } catch (ex: Exception) {
+                        L.severe(ex.message)
+                        callback.onError(errorParsingError, responseAsJsonString)
+                    }
                 } else {
                     val errorString = response.errorBody()?.string()
 
@@ -225,12 +228,8 @@ class RavePay private constructor(private val ravePayBuilder: Builder) {
                 if (response.isSuccessful) {
                     val responseAsJsonString = response.requireBody()
                     try {
-                        val type =
-                            object : TypeToken<ApiResponse<RequeryResponseData>>() {}.type
                         val apiResponse =
-                            GSON.fromJson<ApiResponse<RequeryResponseData>>(
-                                responseAsJsonString, type
-                            )
+                            GSON.fromJson<ApiResponse<RequeryResponseData>>(responseAsJsonString)
                         callback.onSuccess(apiResponse, responseAsJsonString)
 
                     } catch (ex: Exception) {
@@ -336,9 +335,14 @@ class RavePay private constructor(private val ravePayBuilder: Builder) {
             override fun onResponse(call: Call<String>?, response: Response<String>) {
                 if (response.isSuccessful) {
                     val responseAsJsonString = response.requireBody()
-                    val apiResponse =
-                        GSON.fromJson<ApiResponse<PreauthorizeCardData>>(responseAsJsonString)
-                    callback.onSuccess(apiResponse, responseAsJsonString)
+                    try {
+                        val apiResponse =
+                            GSON.fromJson<ApiResponse<PreauthorizeCardData>>(responseAsJsonString)
+                        callback.onSuccess(apiResponse, responseAsJsonString)
+                    } catch (ex: Exception) {
+                        L.severe(ex.message)
+                        callback.onError(errorParsingError, responseAsJsonString)
+                    }
 
                 } else {
                     val errorString = response.errorBody()?.string()
@@ -369,13 +373,15 @@ class RavePay private constructor(private val ravePayBuilder: Builder) {
 
             override fun onResponse(call: Call<String>?, response: Response<String>) {
                 if (response.isSuccessful) {
-                    val type = object : TypeToken<ApiResponse<PreauthorizeCardData>>() {}.type
                     val responseAsJsonString = response.requireBody()
-                    val apiResponse =
-                        GSON.fromJson<ApiResponse<PreauthorizeCardData>>(
-                            responseAsJsonString, type
-                        )
-                    callback.onSuccess(apiResponse, responseAsJsonString)
+                    try {
+                        val apiResponse =
+                            GSON.fromJson<ApiResponse<PreauthorizeCardData>>(responseAsJsonString)
+                        callback.onSuccess(apiResponse, responseAsJsonString)
+                    } catch (ex: Exception) {
+                        L.severe(ex.message)
+                        callback.onError(errorParsingError, responseAsJsonString)
+                    }
 
                 } else {
                     val errorString = response.errorBody()?.string()
@@ -408,13 +414,15 @@ class RavePay private constructor(private val ravePayBuilder: Builder) {
 
             override fun onResponse(call: Call<String>?, response: Response<String>) {
                 if (response.isSuccessful) {
-                    val type = object : TypeToken<ApiResponse<RefundVoidResponseData>>() {}.type
                     val responseAsJsonString = response.requireBody()
-                    val apiResponse =
-                        GSON.fromJson<ApiResponse<RefundVoidResponseData>>(
-                            responseAsJsonString, type
-                        )
-                    callback.onSuccess(apiResponse, responseAsJsonString)
+                    try {
+                        val apiResponse =
+                            GSON.fromJson<ApiResponse<RefundVoidResponseData>>(responseAsJsonString)
+                        callback.onSuccess(apiResponse, responseAsJsonString)
+                    } catch (ex: Exception) {
+                        L.severe(ex.message)
+                        callback.onError(errorParsingError, responseAsJsonString)
+                    }
                 } else {
                     val errorString = response.errorBody()?.string()
 
@@ -452,13 +460,15 @@ class RavePay private constructor(private val ravePayBuilder: Builder) {
 
             override fun onResponse(call: Call<String>?, response: Response<String>) {
                 if (response.isSuccessful) {
-                    val type = object : TypeToken<ApiResponse<GetFeeResponseData>>() {}.type
                     val responseAsJsonString = response.requireBody()
-                    val apiResponse =
-                        GSON.fromJson<ApiResponse<GetFeeResponseData>>(
-                            responseAsJsonString, type
-                        )
-                    callback.onSuccess(apiResponse, responseAsJsonString)
+                    try {
+                        val apiResponse =
+                            GSON.fromJson<ApiResponse<GetFeeResponseData>>(responseAsJsonString)
+                        callback.onSuccess(apiResponse, responseAsJsonString)
+                    } catch (ex: Exception) {
+                        L.severe(ex.message)
+                        callback.onError(errorParsingError, responseAsJsonString)
+                    }
                 } else {
                     val errorString = response.errorBody()?.string()
 
@@ -539,11 +549,16 @@ class RavePay private constructor(private val ravePayBuilder: Builder) {
                 if (response.isSuccessful) {
                     val type = object : TypeToken<ApiResponse<ExchangeRateData>>() {}.type
                     val responseAsJsonString = response.requireBody()
-                    val apiResponse =
-                        GSON.fromJson<ApiResponse<ExchangeRateData>>(
-                            responseAsJsonString, type
-                        )
-                    callback.onSuccess(apiResponse, responseAsJsonString)
+                    try {
+                        val apiResponse =
+                            GSON.fromJson<ApiResponse<ExchangeRateData>>(
+                                responseAsJsonString, type
+                            )
+                        callback.onSuccess(apiResponse, responseAsJsonString)
+                    } catch (ex: Exception) {
+                        L.severe(ex.message)
+                        callback.onError(errorParsingError, responseAsJsonString)
+                    }
 
                 } else {
                     val errorString = response.errorBody()?.string()
