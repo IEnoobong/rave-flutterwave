@@ -9,7 +9,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.util.concurrent.TimeUnit
 
-
 /**
  * @author Ibanga Enoobong I
  * @since 2/27/18.
@@ -26,7 +25,6 @@ internal object ApiClient {
 
         logging.level = if (isStagingEnvironment) HttpLoggingInterceptor.Level.BODY
         else HttpLoggingInterceptor.Level.NONE
-
 
         val httpClient = OkHttpClient.Builder()
             .addNetworkInterceptor(logging)
@@ -45,5 +43,4 @@ internal object ApiClient {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
-
 }

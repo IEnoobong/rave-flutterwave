@@ -121,12 +121,16 @@ data class ApiResponse<out T>(val status: String, val message: String, val data:
 
 data class ChargeResponseData(
     @SerializedName("suggested_auth") val suggestedAuth: String,
-    val chargeResponseCode: String, val authModelUsed: String, val flwRef: String,
-    val chargeResponseMessage: String, @SerializedName("authurl") val authUrl: String
+    val chargeResponseCode: String,
+    val authModelUsed: String,
+    val flwRef: String,
+    val chargeResponseMessage: String,
+    @SerializedName("authurl") val authUrl: String
 )
 
 data class ErrorResponseData(
-    @SerializedName("is_error") val isError: Boolean, val code: String,
+    @SerializedName("is_error") val isError: Boolean,
+    val code: String,
     val message: String
 )
 
@@ -139,7 +143,8 @@ data class ValidateChargePayload(
 }
 
 data class RequeryRequestPayload @JvmOverloads constructor(
-    @SerializedName("flw_ref") val flwRef: String, val normalize: String = "1"
+    @SerializedName("flw_ref") val flwRef: String,
+    val normalize: String = "1"
 ) {
     @SerializedName("SECKEY")
     var secretKey: String = ""
@@ -168,9 +173,12 @@ data class RequeryResponseData(
 data class FlutterWaveMeta(val chargeResponse: String, val chargeResponseMessage: String)
 
 data class CardDetails(
-    val cardBIN: String, @SerializedName("card_tokens") val cardTokens: List<CardToken>,
-    val brand: String, @SerializedName("expirymonth") val expiryMonth: String,
-    @SerializedName("expiryyear") val expiryYear: String, val last4digits: String
+    val cardBIN: String,
+    @SerializedName("card_tokens") val cardTokens: List<CardToken>,
+    val brand: String,
+    @SerializedName("expirymonth") val expiryMonth: String,
+    @SerializedName("expiryyear") val expiryYear: String,
+    val last4digits: String
 )
 
 data class CardToken(
@@ -305,18 +313,18 @@ data class GetFeesPayload(
     var card6: String? = null
 }
 
-
 data class GetFeeResponseData(
     @SerializedName("charge_amount") val chargeAmount: Double,
-    val fee: Double, @SerializedName("merchantfee") val merchantFee: String,
+    val fee: Double,
+    @SerializedName("merchantfee") val merchantFee: String,
     @SerializedName("ravefee") val raveFee: String
 )
-
 
 data class RefundResponseData(
     @SerializedName("AmountRefunded") val amountRefunded: Long,
     val walletId: Int,
-    val createdAt: String, @SerializedName("AccountId") val accountId: Int,
+    val createdAt: String,
+    @SerializedName("AccountId") val accountId: Int,
     val id: Int,
     @SerializedName("FlwRef") val flwRef: String,
     @SerializedName("TransactionId") val transactionId: Int,
@@ -324,11 +332,11 @@ data class RefundResponseData(
     val updatedAt: String
 )
 
-
 data class ExchangeRateData(
     @SerializedName("responsecode") val responseCode: String?,
     @SerializedName("responsemessage") val responseMessage: String?,
-    val rate: Double?, @SerializedName("origincurrency") val originCurrency: String?,
+    val rate: Double?,
+    @SerializedName("origincurrency") val originCurrency: String?,
     @SerializedName("destinationcurrency") val destinationCurrency: String?,
     @SerializedName("lastupdated") val lastUpdated: String?,
     @SerializedName("converted_amount") val convertedAmount: Long?,

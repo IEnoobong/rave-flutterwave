@@ -9,7 +9,6 @@ import com.google.gson.reflect.TypeToken
 import retrofit2.Response
 import java.lang.reflect.Type
 
-
 /**
  * @author Ibanga Enoobong I
  * @since 3/2/18.

@@ -40,7 +40,5 @@ class RaveExtensionsSpec : Spek({
                 assertTrue(accountPayloadIsJsonObject)
             }
         }
-
     }
-
 })
