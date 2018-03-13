@@ -1,5 +1,6 @@
 [![CircleCI](https://circleci.com/gh/IEnoobong/rave-flutterwave/tree/master.svg?style=svg)](https://circleci.com/gh/IEnoobong/rave-flutterwave/tree/master)
-[![CircleCI](https://circleci.com/gh/IEnoobong/rave-flutterwave/tree/master.svg?style=svg&circle-token=bf3c59fc49a5438c0c09665e65451dc225ab371f)](https://circleci.com/gh/IEnoobong/rave-flutterwave/tree/master)
+[![codebeat badge](https://codebeat.co/badges/8aaf43cf-a48d-414b-8231-353aca8e5c37)](https://codebeat.co/projects/github-com-ienoobong-rave-flutterwave-master)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/99613c2e68544d3b8121389f42ad9ac1)](https://www.codacy.com/app/IEnoobong/rave-flutterwave?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=IEnoobong/rave-flutterwave&amp;utm_campaign=Badge_Grade)
 
 # Rave-Flutterwave-Kotlin
 
@@ -8,7 +9,7 @@ collect payments from customers anywhere in the world**
 
 ## Usage
 
-All calls happen asynchronously. Callbacks are executed on the background thread which performed the request.
+All calls happen asynchronously.
 
 ### Maven
 ```

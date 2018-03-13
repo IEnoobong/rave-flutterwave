@@ -50,7 +50,4 @@ internal interface ApiService {
 
     @POST("/flwv3-pug/getpaidx/api/forex")
     fun convertCurrency(@Body body: JsonObject): Call<String>
-
-//    const val CHARGE_TOKEN = "/flwv3-pug/getpaidx/api/tokenized/charge"
-//    const val CHECK_FEE = "/flwv3-pug/getpaidx/api/fee"
 }
