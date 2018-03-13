@@ -46,7 +46,3 @@ jobs:
 
       - run: java -jar ~/codacy-coverage-reporter-assembly-latest.jar -t ${CODACY_PROJECT_TOKEN} -l Java -r target/site/jacoco/jacoco.xml
 
-      - store_test_results:
-          path: target/site/jacoco/jacoco.xml
-
-
