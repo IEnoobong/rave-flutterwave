@@ -29,7 +29,6 @@ import co.enoobong.rave.flutterwave.util.toJsonString
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
-import com.google.gson.reflect.TypeToken
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -263,22 +262,11 @@ class RavePay private constructor(private val ravePayBuilder: Builder) {
                             JsonParser().parse(responseAsJsonString).asJsonObject.get("data")
                                 .isJsonArray
                         val apiResponse = if (isResponseArray) {
-                            val type = object :
-                                TypeToken<ApiResponse<List<XRequeryResponseData>>>() {}
-                                .type
-                            GSON.fromJson<ApiResponse<List<XRequeryResponseData>>>(
-                                responseAsJsonString,
-                                type
-                            )
+                            GSON.fromJson(responseAsJsonString)
                         } else {
-                            val type = object :
-                                TypeToken<ApiResponse<XRequeryResponseData>>() {}
-                                .type
                             val singleTransaction =
                                 GSON.fromJson<ApiResponse<XRequeryResponseData>>(
-                                    responseAsJsonString,
-                                    type
-                                )
+                                    responseAsJsonString)
                             val singleTransactionList =
                                 if (singleTransaction.data == null) emptyList() else listOf(
                                     singleTransaction.data
@@ -488,12 +476,9 @@ class RavePay private constructor(private val ravePayBuilder: Builder) {
 
             override fun onResponse(call: Call<String>?, response: Response<String>) {
                 if (response.isSuccessful) {
-                    val type = object : TypeToken<ApiResponse<RefundResponseData>>() {}.type
                     val responseAsJsonString = response.requireBody()
                     val apiResponse =
-                        GSON.fromJson<ApiResponse<RefundResponseData>>(
-                            responseAsJsonString, type
-                        )
+                        GSON.fromJson<ApiResponse<RefundResponseData>>(responseAsJsonString)
                     callback.onSuccess(apiResponse, responseAsJsonString)
                 } else {
                     val errorString = response.errorBody()?.string()
@@ -539,13 +524,10 @@ class RavePay private constructor(private val ravePayBuilder: Builder) {
 
             override fun onResponse(call: Call<String>?, response: Response<String>) {
                 if (response.isSuccessful) {
-                    val type = object : TypeToken<ApiResponse<ExchangeRateData>>() {}.type
                     val responseAsJsonString = response.requireBody()
                     try {
                         val apiResponse =
-                            GSON.fromJson<ApiResponse<ExchangeRateData>>(
-                                responseAsJsonString, type
-                            )
+                            GSON.fromJson<ApiResponse<ExchangeRateData>>(responseAsJsonString)
                         callback.onSuccess(apiResponse, responseAsJsonString)
                     } catch (ex: Exception) {
                         L.severe(ex.message)
