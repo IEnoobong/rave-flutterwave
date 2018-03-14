@@ -15,7 +15,6 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.lang.reflect.Type
-import java.util.logging.Level
 
 /**
  * @author Ibanga Enoobong I
@@ -80,8 +79,11 @@ internal fun <T : ApiResponse<*>> handleUnsuccessfulRequests(
         val errorDataResponse = errorString.toErrorDataResponse()
 
         callback.onError(errorDataResponse.message, errorString)
-    } catch (ex: Exception) {
-        L.log(Level.SEVERE, ex.message, ex)
+    } catch (ex: JsonParseException) {
+        L.severe(ex.message)
+        callback.onError(errorParsingError, errorString)
+    } catch (ex: JsonSyntaxException) {
+        L.severe(ex.message)
         callback.onError(errorParsingError, errorString)
     }
 }
