@@ -60,18 +60,38 @@ class RavePay private constructor(private val ravePayBuilder: Builder) {
         internal var userPublicKey = ""
             private set
 
+        /**
+         * Set environment for this RavePay
+         *
+         * @param environment desired enviroment
+         */
         fun setEnvironment(environment: Environment) = this.also {
             whichEnvironment = environment
         }
 
+        /**
+         * Set secret key to use gotten from your RavePay dashboard
+         *
+         * @param secretKey your secret key usually begins with FLWSEK-
+         */
         fun setSecretKey(secretKey: String) = this.also {
             userSecretKey = secretKey
         }
 
+        /**
+         * Set public key to use gotten from your RavePay dashboard
+         *
+         * @param publicKey your secret key usually begins with FLWPUBK-
+         */
         fun setPublicKey(publicKey: String) = this.also {
             userPublicKey = publicKey
         }
 
+        /**
+         * Create a RavePay instance
+         *
+         * @return a RavePay instance
+         */
         fun build(): RavePay {
             require(userSecretKey.isNotBlank() and userPublicKey.isNotBlank()) { "Secret/Public key cannot be empty or blank" }
             return RavePay(this)

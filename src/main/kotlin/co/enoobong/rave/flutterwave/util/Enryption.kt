@@ -9,6 +9,7 @@ import javax.crypto.spec.SecretKeySpec
  * @author Ibanga Enoobong I
  * @since 3/9/18.
  */
+
 @Throws(Exception::class)
 private fun String.toMd5(): String {
     val md = MessageDigest.getInstance("MD5")
@@ -22,6 +23,11 @@ private fun String.toMd5(): String {
 
 private const val TARGET = "FLWSECK-"
 
+/**
+ * Encrypt a secret key using MD5 Algorithm.
+ *
+ * Key should begin with FLWSECK-
+ */
 fun encryptSecretKey(secretKey: String): String {
     val md5Hash = secretKey.toMd5()
     val cleanSecret = secretKey.replace(TARGET, "")
@@ -29,9 +35,16 @@ fun encryptSecretKey(secretKey: String): String {
     return cleanSecret.substring(0, 12) + md5Hash.substring(hashLength - 12, hashLength)
 }
 
+/**
+ * function to encrypt request using 3DES
+ *
+ * @param unEncryptedData this is the data containing sensitive information to be encrypted
+ *
+ * @param encryptedSecretKey this is your encrypted secret key {@link #encryptSecretKey}
+ */
 @Throws(Exception::class)
-fun encryptRequest(unEncryptedData: String, key: String): String {
-    val keyBytes = key.toByteArray()
+fun encryptRequest(unEncryptedData: String, encryptedSecretKey: String): String {
+    val keyBytes = encryptedSecretKey.toByteArray()
     val secretKeySpec = SecretKeySpec(keyBytes, "DESede")
     val cipher = Cipher.getInstance("DESede/ECB/PKCS5Padding")
 
