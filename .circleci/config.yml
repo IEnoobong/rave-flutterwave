@@ -23,8 +23,6 @@ jobs:
     steps:
       - checkout
 
-      - run: mvn clean install
-
       # Download and cache dependencies
       - restore_cache:
           keys:
@@ -41,4 +39,10 @@ jobs:
 
       # run tests!
       - run: mvn integration-test
+
+      - run: sudo apt-get install jq
+
+      - run: wget -O ~/codacy-coverage-reporter-assembly-latest.jar $(curl https://api.github.com/repos/codacy/codacy-coverage-reporter/releases/latest | jq -r .assets[0].browser_download_url)
+
+      - run: java -jar ~/codacy-coverage-reporter-assembly-latest.jar -t ${CODACY_PROJECT_TOKEN} -l Java -r target/site/jacoco/jacoco.xml
 
