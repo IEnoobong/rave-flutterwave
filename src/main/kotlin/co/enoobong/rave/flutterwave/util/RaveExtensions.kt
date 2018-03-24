@@ -9,7 +9,6 @@ import co.enoobong.rave.flutterwave.service.RavePay.Companion.GSON
 import co.enoobong.rave.flutterwave.service.RavePay.Companion.L
 import com.google.gson.Gson
 import com.google.gson.JsonParseException
-import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
 import retrofit2.Call
 import retrofit2.Callback
@@ -58,9 +57,6 @@ internal inline fun <reified T : ApiResponse<*>> Call<String>.enqueue(callback: 
                 } catch (ex: JsonParseException) {
                     L.severe(ex.message)
                     callback.onError(errorParsingError, responseAsJsonString)
-                } catch (ex: JsonSyntaxException) {
-                    L.severe(ex.message)
-                    callback.onError(errorParsingError, responseAsJsonString)
                 }
             } else {
                 val errorString = response.errorBody()?.string()
@@ -70,7 +66,7 @@ internal inline fun <reified T : ApiResponse<*>> Call<String>.enqueue(callback: 
     })
 }
 
-internal fun <T : ApiResponse<*>> handleUnsuccessfulRequests(
+internal inline fun <reified T : ApiResponse<*>> handleUnsuccessfulRequests(
     errorString: String?,
     callback:
     RaveCallback<T>
@@ -80,9 +76,6 @@ internal fun <T : ApiResponse<*>> handleUnsuccessfulRequests(
 
         callback.onError(errorDataResponse.message, errorString)
     } catch (ex: JsonParseException) {
-        L.severe(ex.message)
-        callback.onError(errorParsingError, errorString)
-    } catch (ex: JsonSyntaxException) {
         L.severe(ex.message)
         callback.onError(errorParsingError, errorString)
     }

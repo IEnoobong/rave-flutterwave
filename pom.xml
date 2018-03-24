@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns="http://maven.apache.org/POM/4.0.0"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <groupId>co.enoobong</groupId>
     <artifactId>rave-flutterwave-kotlin</artifactId>
     <version>1.0</version>
     <packaging>jar</packaging>
+
     <name>Rave-Flutterwave-Kotlin</name>
+    <description>Kotiln (JVM) library for flutterwave's Rave payment platform. https://flutterwavedevelopers.readme.io
+    </description>
     <url>https://github.com/IEnoobong/rave-flutterwave</url>
 
     <properties>
@@ -62,12 +66,6 @@
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-stdlib-jdk8</artifactId>
             <version>${kotlin.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.squareup.retrofit2</groupId>
-            <artifactId>retrofit-mock</artifactId>
-            <version>${retrofit.version}</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
@@ -186,12 +184,12 @@
                         <configuration>
                             <target name="ktlint">
                                 <java classname="com.github.shyiko.ktlint.Main"
-                                    classpathref="maven.plugin.classpath"
-                                    dir="${basedir}"
-                                    failonerror="true"
-                                    fork="true"
-                                    taskname="ktlint">
-                                    <arg value="src/**/*.kt" />
+                                      classpathref="maven.plugin.classpath"
+                                      dir="${basedir}"
+                                      failonerror="true"
+                                      fork="true"
+                                      taskname="ktlint">
+                                    <arg value="src/**/*.kt"/>
                                 </java>
                             </target>
                         </configuration>
@@ -204,13 +202,13 @@
                         <configuration>
                             <target name="ktlint">
                                 <java classname="com.github.shyiko.ktlint.Main"
-                                    classpathref="maven.plugin.classpath"
-                                    dir="${basedir}"
-                                    failonerror="true"
-                                    fork="true"
-                                    taskname="ktlint">
-                                    <arg value="-F" />
-                                    <arg value="src/**/*.kt" />
+                                      classpathref="maven.plugin.classpath"
+                                      dir="${basedir}"
+                                      failonerror="true"
+                                      fork="true"
+                                      taskname="ktlint">
+                                    <arg value="-F"/>
+                                    <arg value="src/**/*.kt"/>
                                 </java>
                             </target>
                         </configuration>
@@ -232,6 +230,11 @@
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.8.0</version>
+                <configuration>
+                    <excludes>
+                        <exclude>co/enoobong/rave/flutterwave/data/**</exclude>
+                    </excludes>
+                </configuration>
                 <executions>
                     <execution>
                         <id>default-prepare-agent</id>
@@ -284,32 +287,56 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>3.0.1</version>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <goals>
-                            <goal>jar-no-fork</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.0.0</version>
-                <executions>
-                    <execution>
-                        <id>attach-javadocs</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>3.0.1</version>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>3.0.0</version>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.5</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

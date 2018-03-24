@@ -19,7 +19,7 @@ class RaveExtensionsSpec : Spek({
         val cardPayload = CardPayload(
             "5438898014560229", "812", "08", "20", "NGN", "NG", 1000.0,
             "eno@eno.com",
-            "07061234567", "Eno Wa", "Eno", "192.168.1.2", "TEST " + Date().toString(),
+            "07061234567", "Eno Wa", "Eno", "192.168.1.2", "TEST " + Date(),
             "http://test.test"
         )
 

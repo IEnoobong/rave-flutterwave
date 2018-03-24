@@ -59,7 +59,7 @@ implemetation "co.enoobong:rave-flutterwave-kotlin:$rave_version"
 ```
 
 ### Kotlin
-```
+```kotlin
 // Create a RavePay instance
 val ravePay = RavePay.Builder()
             .setEnvironment(Environment.STAGING) //Defaults to STAGING
@@ -72,12 +72,12 @@ val ravePay = RavePay.Builder()
 val cardPayload = CardPayload(
                         "5438898014560229", "812", "08", "20", "NGN", "NG", 1000.0,
                         "eno@eno.com",
-                        "07061234567", "Eno Wa", "Eno", "192.168.1.2", "TEST " + Date().toString(),
+                        "07061234567", "Eno Wa", "Eno", "192.168.1.2", "TEST " + Date(),
                         "http://test.test"
                     )
                     
-                    cardPayload.suggestedAuth = "PIN"
-                    cardPayload.pin = "3310"
+cardPayload.suggestedAuth = "PIN"
+cardPayload.pin = "3310"
             
 ravePay.chargeCard(cardPayload, object : RaveCallback<ApiResponse<ChargeResponseData>>{
             override fun onSuccess(
@@ -92,26 +92,25 @@ ravePay.chargeCard(cardPayload, object : RaveCallback<ApiResponse<ChargeResponse
             }
 
         })            
-
 ```
 
 ### Java
 
-```
+```java
 final RavePay ravePay = new RavePay.Builder()
                 .setEnvironment(Environment.STAGING) //Defaults to STAGING
-                .setSecretKey("FLWSECK-bb971402072265fb156e90a3578fe5e6-X")
-                .setPublicKey("FLWPUBK-e634d14d9ded04eaf05d5b63a0a06d2f-X")
+                .setSecretKey("FLWSECK-bb971402072265fb156e90a3578fe5e6-X") //Secret Key gotten from dashboard in signup above  
+                .setPublicKey("FLWPUBK-e634d14d9ded04eaf05d5b63a0a06d2f-X") //Public Key gotten from dashboard in signup above
                 .build();
                 
 final CardPayload cardPayload = new CardPayload(
                 "5840406187553286", "116", "09", "18", "NGN", "NG", 1000,
                 "enoo@yahoo.com",
-                "07061234567", "Eno Wa", "Eno", "192.168.1.2", "TEST " + new Date().toString(),
+                "07061234567", "Eno Wa", "Eno", "192.168.1.2", "TEST " + new Date(),
                 "http://test.test");
                 
-        cardPayload.setSuggestedAuth("PIN");
-        cardPayload.setPin("1111");                
+cardPayload.setSuggestedAuth("PIN");
+cardPayload.setPin("1111");                
 
 build.preauthorizeCard(cardPayload, new RaveCallback<ApiResponse<PreauthorizeCardData>>() {
             @Override
@@ -122,8 +121,7 @@ build.preauthorizeCard(cardPayload, new RaveCallback<ApiResponse<PreauthorizeCar
 
             @Override
             public void onError(String message, String response) {
-                //Captures an unsuccessful request
-                // Act accordingly 
+                //Captures an unsuccessful request        // Act accordingly 
 
             }
         });                
