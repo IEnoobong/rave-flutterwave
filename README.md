@@ -55,7 +55,7 @@ See https://bintray.com/ienoobong/Rave/rave-flutterwave-kotlin for detailed setu
 
 ### Gradle
 ```markdown
-implemetation "co.enoobong:rave-flutterwave-kotlin:$rave_version"
+implementation "co.enoobong:rave-flutterwave-kotlin:$rave_version"
 ```
 
 ### Kotlin
